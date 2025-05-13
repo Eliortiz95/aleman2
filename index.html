@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Deutsch A2 Interaktive Übungen</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
+    .question-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    .btn { display: inline-block; padding: 10px 15px; background: #28a745; color: white; border: none; border-radius: 5px; margin: 5px 5px 0 0; cursor: pointer; }
+    .btn:hover { background: #218838; }
+    input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    .score { font-size: 1.2em; margin-bottom: 20px; }
+    audio { margin-top: 10px; display: block; }
+  </style>
+</head>
+<body>
+  <h1>Deutsch A2: Interaktive Übungen</h1>
+  <div class="score">Punkte: <span id="score">0</span></div>
+  <div id="quiz-container"></div>
+  <button class="btn" onclick="restartQuiz()">Neu starten</button>
+  <script>
+    const questions = [
+      { type: 'multiple', question: '¿Qué significa "laufen"?', options: ['correr', 'comer', 'dormir', 'leer'], answer: 'correr' },
+      { type: 'multiple', question: '¿Qué significa "sehen"?', options: ['ver', 'sentir', 'tocar', 'caminar'], answer: 'ver' },
+      { type: 'multiple', question: '¿Qué significa "schreiben"?', options: ['leer', 'dormir', 'escribir', 'jugar'], answer: 'escribir' },
+      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "casa"', answer: 'Haus' },
+      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "ventana"', answer: 'Fenster' },
+      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "puerta"', answer: 'Tür' },
+      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "escuela"', answer: 'Schule' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Tisch"', answer: 'mesa' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Stuhl"', answer: 'silla' },
+      { type: 'fill', question: 'Ich ____ gern Musik. (hören)', answer: 'höre' },
+      { type: 'fill', question: 'Er ____ einen Apfel. (essen)', answer: 'isst' },
+      { type: 'fill', question: 'Du ____ eine Katze. (haben)', answer: 'hast' },
+      { type: 'fill', question: 'Wir ____ nach Berlin. (fahren)', answer: 'fahren' },
+      { type: 'order', question: 'Ordne: ich / liebe / Deutsch', correctOrder: ['ich', 'liebe', 'Deutsch'] },
+      { type: 'order', question: 'Ordne: du / lernst / schnell', correctOrder: ['du', 'lernst', 'schnell'] },
+      { type: 'order', question: 'Ordne: wir / essen / Pizza', correctOrder: ['wir', 'essen', 'Pizza'] },
+      { type: 'order', question: 'Ordne: er / trinkt / Wasser', correctOrder: ['er', 'trinkt', 'Wasser'] },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/0/05/De-Haus.ogg', answer: 'Haus' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/1/19/De-Schule.ogg', answer: 'Schule' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/2/25/De-Katze.ogg', answer: 'Katze' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/3/38/De-Auto.ogg', answer: 'Auto' }
+    ];
+    let current = 0;
+    let score = 0;
+    function renderQuestion() {
+      const container = document.getElementById('quiz-container');
+      container.innerHTML = '';
+      if (current >= questions.length) {
+        container.innerHTML = '<h2>Übung abgeschlossen!</h2><p>Du hast ' + score + ' Punkte.</p>';
+        return;
+      }
+      const q = questions[current];
+      const card = document.createElement('div');
+      card.className = 'question-card';
+      const title = document.createElement('p');
+      title.textContent = q.question;
+      card.appendChild(title);
+      if (q.type === 'multiple') {
+        q.options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'btn';
+          btn.textContent = opt;
+          btn.onclick = () => {
+            if (opt === q.answer) score++;
+            current++;
+            updateScore();
+            renderQuestion();
+          };
+          card.appendChild(btn);
+        });
+      } else if (q.type === 'translate' || q.type === 'fill') {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Antwort eingeben';
+        card.appendChild(input);
+        const submit = document.createElement('button');
+        submit.className = 'btn';
+        submit.textContent = 'Überprüfen';
+        submit.onclick = () => {
+          if (input.value.trim().toLowerCase() === q.answer.toLowerCase()) score++;
+          current++;
+          updateScore();
+          renderQuestion();
+        };
+        card.appendChild(submit);
+      } else if (q.type === 'order') {
+        const shuffled = [...q.correctOrder].sort(() => Math.random() - 0.5);
+        const result = [];
+        shuffled.forEach(word => {
+          const btn = document.createElement('button');
+          btn.className = 'btn';
+          btn.textContent = word;
+          btn.onclick = () => {
+            result.push(btn.textContent);
+            btn.disabled = true;
+            if (result.length === q.correctOrder.length) {
+              if (JSON.stringify(result) === JSON.stringify(q.correctOrder)) score++;
+              current++;
+              updateScore();
+              renderQuestion();
+            }
+          };
+          card.appendChild(btn);
+        });
+      } else if (q.type === 'audio') {
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = q.src;
+        card.appendChild(audio);
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.placeholder = 'Antwort eingeben';
+        card.appendChild(input);
+        const submit = document.createElement('button');
+        submit.className = 'btn';
+        submit.textContent = 'Überprüfen';
+        submit.onclick = () => {
+          if (input.value.trim().toLowerCase() === q.answer.toLowerCase()) score++;
+          current++;
+          updateScore();
+          renderQuestion();
+        };
+        card.appendChild(submit);
+      }
+      container.appendChild(card);
+    }
+    function updateScore() {
+      document.getElementById('score').textContent = score;
+    }
+    function restartQuiz() {
+      current = 0;
+      score = 0;
+      updateScore();
+      renderQuestion();
+    }
+    renderQuestion();
+  </script>
+</body>
+</html>

@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Deutsch A2 Interaktive Übungen</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deutsch A2 Übung</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-    .question-card { background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-    .btn { display: inline-block; padding: 10px 15px; background: #28a745; color: white; border: none; border-radius: 5px; margin: 5px 5px 0 0; cursor: pointer; }
-    .btn:hover { background: #218838; }
-    input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    .question-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .btn { padding: 10px 20px; border: none; background: #4CAF50; color: white; border-radius: 8px; cursor: pointer; margin: 5px 0; }
+    .btn:hover { background: #45a049; }
     .score { font-size: 1.2em; margin-bottom: 20px; }
+    input[type=text] { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; margin-bottom: 10px; }
     audio { margin-top: 10px; display: block; }
   </style>
 </head>
@@ -19,123 +19,140 @@
   <div class="score">Punkte: <span id="score">0</span></div>
   <div id="quiz-container"></div>
   <button class="btn" onclick="restartQuiz()">Neu starten</button>
+
   <script>
     const questions = [
-      { type: 'multiple', question: '¿Qué significa "laufen"?', options: ['correr', 'comer', 'dormir', 'leer'], answer: 'correr' },
-      { type: 'multiple', question: '¿Qué significa "sehen"?', options: ['ver', 'sentir', 'tocar', 'caminar'], answer: 'ver' },
-      { type: 'multiple', question: '¿Qué significa "schreiben"?', options: ['leer', 'dormir', 'escribir', 'jugar'], answer: 'escribir' },
-      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "casa"', answer: 'Haus' },
-      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "ventana"', answer: 'Fenster' },
-      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "puerta"', answer: 'Tür' },
-      { type: 'translate', question: 'Übersetze ins Deutsche (mit Artikel): "escuela"', answer: 'Schule' },
-      { type: 'translate', question: 'Übersetze ins Spanische: "Tisch"', answer: 'mesa' },
-      { type: 'translate', question: 'Übersetze ins Spanische: "Stuhl"', answer: 'silla' },
-      { type: 'fill', question: 'Ich ____ gern Musik. (hören)', answer: 'höre' },
+      { type: 'multiple', question: 'Was bedeutet "laufen"?', options: ['correr', 'caminar', 'dormir', 'ver'], answer: 'correr' },
+      { type: 'multiple', question: 'Was bedeutet "sehen"?', options: ['ver', 'comer', 'dormir', 'ir'], answer: 'ver' },
+      { type: 'multiple', question: 'Was bedeutet "schreiben"?', options: ['escribir', 'leer', 'correr', 'jugar'], answer: 'escribir' },
+      { type: 'translate', question: 'Übersetze ins Deutsche: "coche"', answer: 'Auto' },
+      { type: 'translate', question: 'Übersetze ins Deutsche: "escuela"', answer: 'Schule' },
+      { type: 'translate', question: 'Übersetze ins Deutsche: "ropa"', answer: 'Kleidung' },
+      { type: 'translate', question: 'Übersetze ins Deutsche: "zapatos"', answer: 'Schuhe' },
       { type: 'fill', question: 'Er ____ einen Apfel. (essen)', answer: 'isst' },
-      { type: 'fill', question: 'Du ____ eine Katze. (haben)', answer: 'hast' },
       { type: 'fill', question: 'Wir ____ nach Berlin. (fahren)', answer: 'fahren' },
-      { type: 'order', question: 'Ordne: ich / liebe / Deutsch', correctOrder: ['ich', 'liebe', 'Deutsch'] },
-      { type: 'order', question: 'Ordne: du / lernst / schnell', correctOrder: ['du', 'lernst', 'schnell'] },
-      { type: 'order', question: 'Ordne: wir / essen / Pizza', correctOrder: ['wir', 'essen', 'Pizza'] },
+      { type: 'fill', question: 'Du ____ eine Katze. (haben)', answer: 'hast' },
+      { type: 'fill', question: 'Ich ____ gern Musik. (hören)', answer: 'höre' },
+      { type: 'fill', question: 'Sie ____ ein neues Kleid. (kaufen)', answer: 'kauft' },
+      { type: 'order', question: 'Ordne: wir / spielen / Fußball', correctOrder: ['wir', 'spielen', 'Fußball'] },
+      { type: 'order', question: 'Ordne: sie / liest / ein Buch', correctOrder: ['sie', 'liest', 'ein Buch'] },
+      { type: 'order', question: 'Ordne: ich / trinke / Wasser', correctOrder: ['ich', 'trinke', 'Wasser'] },
+      { type: 'order', question: 'Ordne: du / lernst / Deutsch', correctOrder: ['du', 'lernst', 'Deutsch'] },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-36.mp3', answer: 'Haus' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-37.mp3', answer: 'Schule' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-38.mp3', answer: 'Katze' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-39.mp3', answer: 'Auto' },
+      { type: 'multiple', question: 'Was bedeutet "arbeiten"?', options: ['trabajar', 'correr', 'sentarse', 'dormir'], answer: 'trabajar' },
+      { type: 'multiple', question: 'Was bedeutet "hören"?', options: ['escuchar', 'ver', 'correr', 'leer'], answer: 'escuchar' },
+      { type: 'multiple', question: 'Was bedeutet "lesen"?', options: ['leer', 'escribir', 'correr', 'jugar'], answer: 'leer' },
+      { type: 'multiple', question: 'Was ist der richtige Artikel für "Tisch"?', options: ['der', 'die', 'das'], answer: 'der' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Stuhl"', answer: 'silla' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Fenster"', answer: 'ventana' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Buch"', answer: 'libro' },
+      { type: 'fill', question: 'Ich ____ gerne Sport. (machen)', answer: 'mache' },
+      { type: 'fill', question: 'Wir ____ in der Schule. (sein)', answer: 'sind' },
+      { type: 'fill', question: 'Du ____ eine Frage. (stellen)', answer: 'stellst' },
+      { type: 'order', question: 'Ordne: du / trinkst / Wasser', correctOrder: ['du', 'trinkst', 'Wasser'] },
+      { type: 'order', question: 'Ordne: ich / spiele / Fußball', correctOrder: ['ich', 'spiele', 'Fußball'] },
+      { type: 'order', question: 'Ordne: wir / gehen / ins Kino', correctOrder: ['wir', 'gehen', 'ins Kino'] },
+      { type: 'multiple', question: 'Was bedeutet "kochen"?', options: ['cocinar', 'comer', 'dormir', 'correr'], answer: 'cocinar' },
+      { type: 'multiple', question: 'Was ist die richtige Übersetzung von "Hund"?', options: ['gato', 'perro', 'conejo', 'pájaro'], answer: 'perro' },
+      { type: 'multiple', question: 'Was ist der richtige Artikel für "Katze"?', options: ['der', 'die', 'das'], answer: 'die' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-40.mp3', answer: 'Hund' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-41.mp3', answer: 'Katze' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-42.mp3', answer: 'Vogel' },
+      { type: 'multiple', question: 'Was bedeutet "essen"?', options: ['comer', 'beber', 'leer', 'correr'], answer: 'comer' },
+      { type: 'multiple', question: 'Was bedeutet "trinken"?', options: ['beber', 'comer', 'ver', 'leer'], answer: 'beber' },
+      { type: 'multiple', question: 'Was ist der richtige Artikel für "Apfel"?', options: ['der', 'die', 'das'], answer: 'der' },
+      { type: 'multiple', question: 'Was bedeutet "laufen"?', options: ['correr', 'caminar', 'leer', 'escribir'], answer: 'correr' },
+      { type: 'fill', question: 'Wir ____ nach Hause. (gehen)', answer: 'gehen' },
+      { type: 'fill', question: 'Sie ____ einen Film. (sehen)', answer: 'sehen' },
       { type: 'order', question: 'Ordne: er / trinkt / Wasser', correctOrder: ['er', 'trinkt', 'Wasser'] },
-      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/0/05/De-Haus.ogg', answer: 'Haus' },
-      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/1/19/De-Schule.ogg', answer: 'Schule' },
-      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/2/25/De-Katze.ogg', answer: 'Katze' },
-      { type: 'audio', question: 'Was hörst du?', src: 'https://upload.wikimedia.org/wikipedia/commons/3/38/De-Auto.ogg', answer: 'Auto' }
+      { type: 'order', question: 'Ordne: wir / lesen / ein Buch', correctOrder: ['wir', 'lesen', 'ein Buch'] },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Fahrrad"', answer: 'bicicleta' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Straße"', answer: 'calle' },
+      { type: 'translate', question: 'Übersetze ins Spanische: "Blume"', answer: 'flor' },
+      { type: 'multiple', question: 'Was bedeutet "fliegen"?', options: ['volar', 'nadar', 'correr', 'caminar'], answer: 'volar' },
+      { type: 'multiple', question: 'Was bedeutet "springen"?', options: ['saltar', 'ver', 'leer', 'beber'], answer: 'saltar' },
+      { type: 'multiple', question: 'Was ist der richtige Artikel für "Tasche"?', options: ['der', 'die', 'das'], answer: 'die' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-43.mp3', answer: 'Vogel' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-44.mp3', answer: 'Auto' },
+      { type: 'audio', question: 'Was hörst du?', src: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-45.mp3', answer: 'Hund' },
+      { type: 'fill', question: 'Er ____ nach Hause. (fahren)', answer: 'fährt' },
+      { type: 'fill', question: 'Du ____ die Tür. (öffnen)', answer: 'öffnest' }
     ];
-    let current = 0;
+
+    let currentQuestion = 0;
     let score = 0;
+
     function renderQuestion() {
-      const container = document.getElementById('quiz-container');
-      container.innerHTML = '';
-      if (current >= questions.length) {
-        container.innerHTML = '<h2>Übung abgeschlossen!</h2><p>Du hast ' + score + ' Punkte.</p>';
-        return;
+      const quizContainer = document.getElementById('quiz-container');
+      quizContainer.innerHTML = '';
+      const question = questions[currentQuestion];
+      const questionCard = document.createElement('div');
+      questionCard.classList.add('question-card');
+      
+      const questionText = document.createElement('p');
+      questionText.textContent = question.question;
+      questionCard.appendChild(questionText);
+
+      if (question.type === 'multiple') {
+        question.options.forEach((option, index) => {
+          const optionLabel = document.createElement('label');
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = 'option';
+          input.value = option;
+          optionLabel.appendChild(input);
+          optionLabel.appendChild(document.createTextNode(option));
+          questionCard.appendChild(optionLabel);
+        });
       }
-      const q = questions[current];
-      const card = document.createElement('div');
-      card.className = 'question-card';
-      const title = document.createElement('p');
-      title.textContent = q.question;
-      card.appendChild(title);
-      if (q.type === 'multiple') {
-        q.options.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.className = 'btn';
-          btn.textContent = opt;
-          btn.onclick = () => {
-            if (opt === q.answer) score++;
-            current++;
-            updateScore();
-            renderQuestion();
-          };
-          card.appendChild(btn);
-        });
-      } else if (q.type === 'translate' || q.type === 'fill') {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.placeholder = 'Antwort eingeben';
-        card.appendChild(input);
-        const submit = document.createElement('button');
-        submit.className = 'btn';
-        submit.textContent = 'Überprüfen';
-        submit.onclick = () => {
-          if (input.value.trim().toLowerCase() === q.answer.toLowerCase()) score++;
-          current++;
-          updateScore();
-          renderQuestion();
-        };
-        card.appendChild(submit);
-      } else if (q.type === 'order') {
-        const shuffled = [...q.correctOrder].sort(() => Math.random() - 0.5);
-        const result = [];
-        shuffled.forEach(word => {
-          const btn = document.createElement('button');
-          btn.className = 'btn';
-          btn.textContent = word;
-          btn.onclick = () => {
-            result.push(btn.textContent);
-            btn.disabled = true;
-            if (result.length === q.correctOrder.length) {
-              if (JSON.stringify(result) === JSON.stringify(q.correctOrder)) score++;
-              current++;
-              updateScore();
-              renderQuestion();
-            }
-          };
-          card.appendChild(btn);
-        });
-      } else if (q.type === 'audio') {
+
+      if (question.type === 'audio') {
         const audio = document.createElement('audio');
         audio.controls = true;
-        audio.src = q.src;
-        card.appendChild(audio);
+        audio.src = question.src;
+        questionCard.appendChild(audio);
+      }
+
+      if (question.type === 'fill') {
         const input = document.createElement('input');
         input.type = 'text';
-        input.placeholder = 'Antwort eingeben';
-        card.appendChild(input);
-        const submit = document.createElement('button');
-        submit.className = 'btn';
-        submit.textContent = 'Überprüfen';
-        submit.onclick = () => {
-          if (input.value.trim().toLowerCase() === q.answer.toLowerCase()) score++;
-          current++;
-          updateScore();
-          renderQuestion();
-        };
-        card.appendChild(submit);
+        questionCard.appendChild(input);
       }
-      container.appendChild(card);
+
+      const submitBtn = document.createElement('button');
+      submitBtn.textContent = 'Antwort einreichen';
+      submitBtn.classList.add('btn');
+      submitBtn.onclick = () => checkAnswer(question, questionCard);
+      questionCard.appendChild(submitBtn);
+
+      quizContainer.appendChild(questionCard);
     }
-    function updateScore() {
-      document.getElementById('score').textContent = score;
+
+    function checkAnswer(question, questionCard) {
+      const userAnswer = questionCard.querySelector('input[type="text"]').value || 
+                         questionCard.querySelector('input[type="radio"]:checked')?.value;
+      if (userAnswer === question.answer) {
+        score++;
+        document.getElementById('score').textContent = score;
+      }
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        renderQuestion();
+      } else {
+        alert('Quiz abgeschlossen!');
+      }
     }
+
     function restartQuiz() {
-      current = 0;
+      currentQuestion = 0;
       score = 0;
-      updateScore();
+      document.getElementById('score').textContent = score;
       renderQuestion();
     }
+
     renderQuestion();
   </script>
 </body>
